@@ -15,6 +15,7 @@
 #include <cstring>
 #include <climits>
 #include <cstdint>
+#include <string>
 
 using namespace std;
 
@@ -67,78 +68,63 @@ bool chmax(T& a,T b){
 
 #endif
 
-
-
-
-
-const int N = 435;
-
 void solve(){
-    int n, k;
-    cin >> n >> k;
+    int n;
+    cin >> n;
+    priority_queue<pair<int,int>> pq;
+    ll sum = 0;
+    for(int i = 1; i <= n; i++){
+        int x;
+        cin >> x;
+        if(x >= n){
+            cout << "IMPOSSIBLE" << endl;
+            return;
+        }
 
-    int total = n * (n - 1) / 2;
-    int need = total - k;
-
-    vector<vector<int>> pre(n + 1, vector<int>(need + 1, -1));
-    pre[0][0] = 0;
-
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j <= need; j++){
-            if(pre[i][j] == -1) continue;
-
-            for(int len = 1; i + len <= n; len++){
-                int add = len * (len - 1) / 2;
-                if(j + add > need) break;
-
-                if(pre[i + len][j + add] == -1){
-                    pre[i + len][j + add] = len;
-                }
-            }
+        sum += x;
+        if(x > 0){
+            pq.push({x, i});
         }
     }
-
-    if(pre[n][need] == -1){
-        cout << 0 << endl;
+    if(sum % 2){
+        cout << "IMPOSSIBLE" << endl;
         return;
     }
+    vector<pair<int,int>> ans;
+    while(!pq.empty()){
+        auto [d, u] = pq.top();
+        pq.pop();
 
-    vector<int> lens;
-
-    int i = n;
-    int cur = need;
-
-    while(i > 0){
-        int len = pre[i][cur];
-        lens.pb(len);
-
-        i -= len;
-        cur -= len * (len - 1) / 2;
-    }
-
-    reverse(all(lens));
-
-    vector<int> ans;
-    int mx = n;
-
-    for(int len : lens){
-        for(int x = mx - len + 1; x <= mx; x++){
-            ans.pb(x);
+        if(d > sz(pq)){
+            cout << "IMPOSSIBLE" << endl;
+            return;
         }
-        mx -= len;
+        vector<pair<int,int>> cur;
+
+        for(int i = 0; i < d; i++){
+            auto [x, v] = pq.top();
+            pq.pop();
+            ans.pb({u, v});
+            x--;
+            if(x > 0){
+                cur.pb({x, v});
+            }
+        }
+
+        for(auto x : cur){
+            pq.push(x);
+        }
     }
 
-    for(int i = 0; i < n; i++){
-        if(i) cout << ' ';
-        cout << ans[i];
+    cout << sz(ans) << endl;
+    for(auto [u, v] : ans){
+        cout << u << ' ' << v << endl;
     }
-    cout << endl;
 }
 
 int main(){
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    int t;
-    cin >> t;
-    while(t--) solve();
+    // int t; cin >> t;
+    solve();
 }
