@@ -1,8 +1,9 @@
-#ifndef CP_TEMPLATE_ORZING
-#define CP_TEMPLATE_ORZING
+#ifndef CP_TEMPLATE
+#define CP_TEMPLATE
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include <algorithm>
 #include <queue>
 #include <stack>
@@ -15,7 +16,6 @@
 #include <cstring>
 #include <climits>
 #include <cstdint>
-#include <string>
 
 using namespace std;
 
@@ -66,65 +66,48 @@ bool chmax(T& a,T b){
 #define dbg(...)
 #endif
 
-#endif
+#endif 
+
 
 void solve(){
     int n;
     cin >> n;
-    priority_queue<pair<int,int>> pq;
-    ll sum = 0;
-    for(int i = 1; i <= n; i++){
-        int x;
-        cin >> x;
-        if(x >= n){
-            cout << "IMPOSSIBLE" << endl;
-            return;
-        }
 
-        sum += x;
-        if(x > 0){
-            pq.push({x, i});
-        }
+    vector<int> p(n + 1);
+    vector<int> dep(n + 1);
+
+    for(int i = 2; i <= n; i++){
+        cin >> p[i];
+        dep[i] = dep[p[i]] + 1;
     }
-    if(sum % 2){
-        cout << "IMPOSSIBLE" << endl;
-        return;
+
+    int m;
+    cin >> m;
+    vector<int> a(m);
+    for(int i = 0; i < m; i++){
+        cin >>a[i];
     }
-    vector<pair<int,int>> ans;
-    while(!pq.empty()){
-        auto [d, u] = pq.top();
-        pq.pop();
 
-        if(d > sz(pq)){s
-            cout << "IMPOSSIBLE" << endl;
-            return;
-        }
-        vector<pair<int,int>> cur;
-
-        for(int i = 0; i < d; i++){
-            auto [x, v] = pq.top();
-            pq.pop();
-            ans.pb({u, v});
-            x--;
-            if(x > 0){
-                cur.pb({x, v});
-            }
-        }
-
-        for(auto x : cur){
-            pq.push(x);
+    int keep = a[0];
+    for(int v : a){
+        if(dep[v] < dep[keep]){
+            keep = v;
         }
     }
 
-    cout << sz(ans) << endl;
-    for(auto [u, v] : ans){
-        cout << u << ' ' << v << endl;
+    cout << m - 1;
+    for(int v : a){
+        if(v != keep){
+            cout << ' ' << v;
+        }
     }
+    cout<<endl;
 }
 
 int main(){
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    // int t; cin >> t;
-    solve();
+    int t; cin >> t;
+    while(t--) solve();
+
 }

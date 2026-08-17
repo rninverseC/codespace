@@ -1,8 +1,9 @@
-#ifndef CP_TEMPLATE_ORZING
-#define CP_TEMPLATE_ORZING
+#ifndef CP_TEMPLATE
+#define CP_TEMPLATE
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include <algorithm>
 #include <queue>
 #include <stack>
@@ -15,7 +16,6 @@
 #include <cstring>
 #include <climits>
 #include <cstdint>
-#include <string>
 
 using namespace std;
 
@@ -66,65 +66,61 @@ bool chmax(T& a,T b){
 #define dbg(...)
 #endif
 
-#endif
+#endif 
 
 void solve(){
-    int n;
-    cin >> n;
-    priority_queue<pair<int,int>> pq;
-    ll sum = 0;
-    for(int i = 1; i <= n; i++){
-        int x;
-        cin >> x;
-        if(x >= n){
-            cout << "IMPOSSIBLE" << endl;
-            return;
-        }
-
-        sum += x;
-        if(x > 0){
-            pq.push({x, i});
-        }
-    }
-    if(sum % 2){
-        cout << "IMPOSSIBLE" << endl;
-        return;
-    }
-    vector<pair<int,int>> ans;
-    while(!pq.empty()){
-        auto [d, u] = pq.top();
-        pq.pop();
-
-        if(d > sz(pq)){s
-            cout << "IMPOSSIBLE" << endl;
-            return;
-        }
-        vector<pair<int,int>> cur;
-
-        for(int i = 0; i < d; i++){
-            auto [x, v] = pq.top();
-            pq.pop();
-            ans.pb({u, v});
-            x--;
-            if(x > 0){
-                cur.pb({x, v});
+    ll s;
+    int q;
+    cin >> s >> q;
+    vector<ll> d;
+    for(ll i = 1; i <= s/i; i++){
+        if (s%i==0){
+            d.pb(i);
+            if(i != s/i){
+                d.pb(s/i);
             }
         }
-
-        for(auto x : cur){
-            pq.push(x);
+    }
+    sort(all(d));
+    int n = sz(d);
+    vector<ll> pref(n);
+    ll last = 0;
+    for(int i = 0; i < n; i++){
+        ll wid = d[i] - last;
+        ll height = s/d[i];
+        pref[i] = wid * height;
+        if(i > 0){
+            pref[i] += pref[i - 1];
         }
+        last = d[i];
     }
-
-    cout << sz(ans) << endl;
-    for(auto [u, v] : ans){
-        cout << u << ' ' << v << endl;
+    while(q--){
+        ll x,y;
+        cin >> x >> y;
+        ll limit = s/y;
+        int j = upper_bound(all(d), limit) - d.begin() - 1;
+        ll w = d[j];
+        if(x <= w){
+            cout << x*y << endl;
+            continue;
+        }
+        int k = lower_bound(all(d), x) - d.begin();
+        ll prev = 0;
+        ll fx = 0;
+        if (k > 0){
+            prev = d[k-1];
+            fx = pref[k-1];
+        }
+        fx += (x-prev) * (s/d[k]);
+        ll ans = w*y+fx-pref[j];
+        cout << ans <<endl;
+    
     }
-}
+}   
 
 int main(){
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    // int t; cin >> t;
-    solve();
+    int t; cin >> t;
+    while(t--) solve();
 }
