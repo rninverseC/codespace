@@ -14,7 +14,7 @@ void dfs(int v, int par){
         if(x==par) continue;
         dfs(x, v);
     }
-    tout[v] = timer;
+    tout[v] = timer-1;
 }
 
 void build(int node, int l, int r){
@@ -33,8 +33,8 @@ void build(int node, int l, int r){
 }
 
 bool query(int node, int l, int r, int ql, int qr, int low, int high){
-    if(qr<1 || r<ql) return false;
-    if(ql<=1 && r<=qr){
+    if(qr<l || r<ql) return false;
+    if(ql<=l && r<=qr){
         auto it = lower_bound(seg[node].begin(), seg[node].end(),low);
         return it != seg[node].end() && *it <= high;
     }
@@ -58,7 +58,8 @@ void solve(){
     timer = 0;
     dfs(1,0);
     for(int i = 1; i<=n; i++){
-        int x; cin>> tin[x];
+        int x; cin>>x; 
+        a[i]=tin[x];
     }
     build(1,1,n);
     while(q--){
