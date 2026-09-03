@@ -33,8 +33,8 @@ void build(int node, int l, int r){
 }
 
 bool query(int node, int l, int r, int ql, int qr, int low, int high){
-    if(qr<l || r<ql) return false;
-    if(ql<=l && r<=qr){
+    if(qr<1 || r<ql) return false;
+    if(ql<=1 && r<=qr){
         auto it = lower_bound(seg[node].begin(), seg[node].end(),low);
         return it != seg[node].end() && *it <= high;
     }
