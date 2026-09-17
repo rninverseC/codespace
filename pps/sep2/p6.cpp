@@ -2,10 +2,9 @@
 #include <vector>
 #include <algorithm>
 #include<climits>
+#include <array>
 using namespace std;
 using ll = long long;
-
-
 
 
 void solve(){
@@ -79,7 +78,7 @@ void solve(){
                 }
             }
         }
-        can = nxt;
+        can = next;
         cur = t;
     }
     int best = -1;
